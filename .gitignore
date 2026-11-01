@@ -35,3 +35,6 @@ Thumbs.db
 *.webm
 *.ogg
 *.mp4
+
+# The one set of weights kept in this repo
+!detectors/realanot_head.safetensors

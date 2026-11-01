@@ -1,5 +1,47 @@
 # Detector evaluation results
 
+## Run 8: calibrated test of the best version so far (1 Nov 2026)
+
+**What was run:** the original model and `final_slow` (trained on real clips, Piper and Orpheus, lr 3e-5, 4 epochs) scored on clean, compressed and phone copies. Their scores are combined by a logistic model fitted per channel on validation only (`detectors/calibration.json`). Outputs are in `results/final_test/`. This is not the final test: vocoded training is still to come, and that head will need its own test.
+
+| Test set | Audio | Original EER | Combined EER | Fakes missed at 50% | Real flagged at 50% |
+|---|---|---|---|---|---|
+| Singapore (300 real, 498 fake) | clean | 7.92% | 0.00% | 0.2% | 0.0% |
+| Singapore | compressed | 7.75% | 0.00% | 0.8% | 0.0% |
+| Singapore | phone | 11.56% | 3.01% | 2.6% | 3.3% |
+| LibriSpeech (200 real, 200 fake) | clean | 7.50% | 0.00% | 0.5% | 0.0% |
+| LibriSpeech | compressed | 6.00% | 1.25% | 2.0% | 0.5% |
+| LibriSpeech | phone | 16.25% | 5.50% | 2.0% | 13.0% |
+
+Phone EER by generator, original then combined. Singapore: Orpheus 7.02% to 3.51%, Piper 26.67% to 3.17%, SpeechT5 (never trained on) 8.00% to 1.67%. LibriSpeech: Piper 25.25% to 6.75%, SpeechT5 8.00% to 2.75%.
+
+**Real deepfakes, full verdict (6 clips):**
+
+| Clip | As received | Phone (GSM) |
+|---|---|---|
+| Lee Hsien Loong, fake CGTN interview | HIGH 99% | HIGH 99% |
+| Compilation of Lee and Wong deepfakes | HIGH 99% | HIGH 97% |
+| Lawrence Wong deepfake, reposted 2025 | HIGH 99% | MEDIUM 50% |
+| Lawrence Wong (DPM), Straits Times short | INCONCLUSIVE 87% | HIGH 80% |
+| Straits Times report (mixed news material) | INCONCLUSIVE 8% | HIGH 74% |
+| SPF footage of the 2026 deepfake Zoom call | INCONCLUSIVE 5% | LOW 14% |
+
+**Honest reading:**
+- The phone channel is much better than Run 5, where only 1 of 6 real deepfakes stayed clearly flagged. That run scored raw heads and this one uses the full verdict, so the two are not an exact comparison.
+- The Zoom call is still a miss, and it is the most recent and most relevant attack. The audio has not been separated from SPF's captions and music.
+- Real deepfakes helped steer this work (Run 5 led to adding Orpheus), so these 6 clips are no longer fully independent, although they were never trained on or used to set any weights.
+- Only SpeechT5 is an unseen generator. Orpheus and Piper test clips use unseen voices from generators in training.
+- On validation, the Orpheus voice held back (tara) had a 16.12% phone EER with `final_slow` alone, against 2.68% for the head alone on the test voices. Results depend heavily on the voice.
+- False alarms on phone audio differ by speaker set: 3.3% for Singaporean voices and 13.0% for LibriSpeech. Clips were assumed equally likely real or fake, while real calls are mostly genuine.
+- The window-spread limits are now tight because validation scores are so separated. From saved window scores, 0% to 7.5% of test clips exceed the limit depending on the condition, with compressed LibriSpeech the highest.
+- The test clips were also used to report older versions, but no setting was chosen on them here.
+
+## Runs 6 and 7: Orpheus fakes and training settings (31 Oct to 1 Nov 2026)
+
+**Run 6:** Orpheus Singlish fakes showed the earlier heads had a blind spot on phone audio. At the 0.5 cut-off, fine-tuned 2 missed 64.1% of Orpheus fakes, the original model 15.5%, on 216 real and 206 Orpheus clips.
+
+**Run 7:** head training on validation clips, phone EER. A head fitted to one generator got worse on others, and a lower learning rate only limited the damage. Training on both generators worked best: all generators, lr 3e-5, epoch 4 gave clean 0.00%, phone 7.17%, Orpheus 16.12%, Piper 1.62% (original: 3.78%, 23.54%, 19.20%, 25.69%). Label smoothing made little difference. The run holding out Piper at lr 3e-5 failed with an out-of-memory error, so it has no result.
+
 ## Run 5: real deepfakes of Singapore officials (30 Oct 2026)
 
 **What was run:** `python -m eval.officials_report` on 6 publicly circulated deepfake clips (evaluation only; sources kept in the private project notes), each as downloaded and after a simulated GSM call. Three detector versions: original, fine-tuned 1 (audiobook data), fine-tuned 2 (plus Singaporean speech, Run 4's recipe on `data/train_manifest_sg.csv`; best validation epoch 4, phone EER 0.46%). Mean raw fake score over all 5 s windows (0 = real, 1 = fake):
@@ -152,7 +194,7 @@ Inconclusive (under 2 s, or windows disagree): 5 clean, 3 phone.
 2. **Results depend heavily on the generator.** SpeechT5 is caught perfectly on clean audio; Piper is much harder (EER 11% clean, 25% phone). Quoting one overall number would hide this.
 3. **The raw score is not a probability.** Scores top out around 0.75 even for obvious fakes, and the best cut-off moves from about 0.11 (clean) to about 0.42 (phone). A fixed 0.5 threshold misses half the clean Piper fakes. Calibration on phone-quality data is needed before showing users a percentage.
 
-**Limits (say these in the pitch):**
+**Limits:**
 - EER uses the best threshold for this test set, so it is optimistic.
 - Only two TTS generators, both older designs; no codec-based (newer) TTS yet.
 - Real voices are read audiobook speech, not phone conversations. The detector may also have seen similar audiobook data in training (unknown).

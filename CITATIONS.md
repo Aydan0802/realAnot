@@ -6,7 +6,7 @@ Every external model, dataset and library used in this project, with its licence
 
 | Name | Source | Licence | Used for |
 |---|---|---|---|
-| forensics_0.3B_xlsr_wild_deepfake_classifier | https://huggingface.co/eliya/forensics_0.3B_xlsr_wild_deepfake_classifier | CC-BY-NC-4.0 (non-commercial; fine for coursework) | Main voice deepfake detector |
+| forensics_0.3B_xlsr_wild_deepfake_classifier | https://huggingface.co/eliya/forensics_0.3B_xlsr_wild_deepfake_classifier | CC-BY-NC-4.0 (non-commercial) | Main voice deepfake detector |
 | wav2vec2-xls-r-300m (backbone config) | https://huggingface.co/facebook/wav2vec2-xls-r-300m | Apache-2.0 | Backbone architecture of the detector |
 
 | AudioSeal (San Roman et al., 2024), detector_base + generator_base | https://github.com/facebookresearch/audioseal, https://huggingface.co/facebook/audioseal | MIT | Watermark layer (detect) and making watermarked demo clips (generate) |

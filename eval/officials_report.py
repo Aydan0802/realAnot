@@ -1,7 +1,7 @@
 """
 officials_report.py - test the detector on REAL deepfakes of Singapore officials.
 
-Evaluation only: the team collects
+Evaluation only: collect
 publicly circulated deepfake clips, puts the files in
     data/fake_public/sg_officials/raw/
 and adds one row per file to docs/sg_officials_sources.csv
@@ -41,7 +41,8 @@ RAW = ROOT / "data" / "fake_public" / "sg_officials" / "raw"
 WAV_DIR = RAW.parent
 SOURCES = ROOT / "docs" / "sg_officials_sources.csv"
 FINETUNED = {"fine-tuned 1": ROOT / "models" / "finetuned" / "head.safetensors",      # audiobook data only
-             "fine-tuned 2": ROOT / "models" / "finetuned" / "head_sg.safetensors"}  # + Singaporean speech
+             "fine-tuned 2": ROOT / "models" / "finetuned" / "head_sg.safetensors",  # + Singaporean speech
+             "best so far": ROOT / "models" / "finetuned" / "final_slow.safetensors"}  # + Orpheus fakes
 OUT = ROOT / "results" / "sg_officials"
 FLAG_AT = 0.5  # a window counts as "flagged" when its raw fake score is at least this
 
@@ -91,7 +92,7 @@ def main():
                 r = score_clip(audio, head)
                 windows = np.array(r["window_scores"])
                 starts = window_starts(len(audio), len(windows))
-                # Every window's score, so the team can line them up with the video
+                # Every window's score, so they can be lined up with the video
                 # (these clips often mix the deepfake with narration or real footage).
                 timeline += [{"file": src["file"], "condition": condition, "model": model_name,
                               "start_s": t, "fake_score": round(float(s), 3)}
