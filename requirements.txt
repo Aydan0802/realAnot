@@ -1,0 +1,45 @@
+# Project dependencies (tested on Windows 11, Python 3.13, 30 Oct 2026).
+#
+# PyTorch is installed separately because the GPU build comes from PyTorch's own index:
+#   GPU (NVIDIA):  pip install torch==2.11.0 torchaudio==2.11.0 --index-url https://download.pytorch.org/whl/cu128
+#   CPU only:      pip install torch==2.11.0 torchaudio==2.11.0 --index-url https://download.pytorch.org/whl/cpu
+# Then:            pip install -r requirements.txt
+
+# Detector model loading
+transformers==5.22.0
+safetensors==0.8.0
+huggingface_hub==2.4.0
+
+# Watermark detection (Meta AudioSeal; weights loaded with a restricted unpickler, see detectors/watermark.py)
+audioseal==0.2.0
+
+# Audio input/output and processing
+soundfile==0.14.0
+librosa==1.0.0
+imageio-ffmpeg==0.7.0   # bundled ffmpeg binary (G.711, GSM, AMR-NB codecs for phone simulation)
+
+# Free text-to-speech for making synthetic test clips
+piper-tts==1.8.0
+sentencepiece==0.2.2    # text tokenizer used by SpeechT5
+
+# Newer, Singapore-accented TTS (Orpheus 3B Singlish, loaded in 4-bit) and its audio codec
+bitsandbytes==0.50.2
+accelerate==1.15.0
+snac==1.2.1
+
+# Singapore speech corpus files (parquet) and the local demo UI
+pyarrow==26.0.0
+gradio==6.31.0
+
+# Only used to download the public deepfake clips of officials (eval only)
+yt-dlp==2026.10.26
+
+# Numbers, evaluation and charts
+numpy==2.5.4
+pandas==3.1.0
+scipy==1.18.1
+scikit-learn==1.9.1
+matplotlib==3.11.2
+
+# Tests
+pytest==9.2.0

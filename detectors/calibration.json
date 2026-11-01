@@ -1,0 +1,33 @@
+{
+  "method": "P(fake) = sigmoid(sum(w * logit(raw per head)) + bias), fitted per channel",
+  "heads": [
+    null
+  ],
+  "band_cutoff": 0.0002,
+  "bands": {
+    "LOW": 0.3,
+    "MEDIUM": 0.7,
+    "HIGH": 1.01
+  },
+  "prior_note": "fitted on roughly 50/50 real/fake data; real calls are mostly genuine",
+  "wideband": {
+    "weights": [
+      4.7838
+    ],
+    "bias": 9.0143,
+    "n_real": 100,
+    "n_fake": 107,
+    "spread_warn": 0.15,
+    "spread_limit": 0.25
+  },
+  "phone": {
+    "weights": [
+      1.6434
+    ],
+    "bias": 0.7207,
+    "n_real": 100,
+    "n_fake": 107,
+    "spread_warn": 0.15,
+    "spread_limit": 0.25
+  }
+}

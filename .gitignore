@@ -1,0 +1,37 @@
+# Python
+.venv/
+__pycache__/
+*.pyc
+
+# Model weights and downloaded models (never commit)
+*.safetensors
+*.pt
+*.pth
+*.bin
+*.onnx
+models/
+hf_cache/
+
+# Audio data and datasets (never commit)
+data/
+*.wav
+*.flac
+*.mp3
+
+# Raw downloads (archives, extracted datasets, TTS voice files)
+downloads/
+
+# Generated outputs (regenerate with the scripts)
+results/
+
+# Editor / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Audio and video from any other folder
+*.m4a
+*.webm
+*.ogg
+*.mp4
